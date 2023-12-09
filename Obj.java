@@ -4,9 +4,9 @@ import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Obj {
-    double x;
-    double y;
-    double z;
+    float x;
+    float y;
+    float z;
     File file;
     //reading file
     ArrayList<String> lines = new ArrayList<String>();
@@ -37,7 +37,7 @@ public class Obj {
         
     */
 
-    public Obj(double x_pos, double y_pos, double z_pos, String filename) {
+    public Obj(float x_pos, float y_pos, float z_pos, String filename) {
         x = x_pos;
         y = y_pos;
         z = z_pos;
@@ -61,7 +61,10 @@ public class Obj {
 
         for (int line = 0; line < lines.size(); line++) {
             if (lines.get(line).length() < 1) {
-                System.out.println("empty");
+                vertices.add(new ArrayList<Float>());
+                vert_texts.add(new ArrayList<Float>());
+                vert_norms.add(new ArrayList<Float>());
+
                 continue;
             }
             
@@ -112,17 +115,15 @@ public class Obj {
                             vert_texts.add(new ArrayList<Float>());
                             vert_norms.add(new ArrayList<Float>());
 
-                            System.out.println(vertices);
-
                             break;
                         case 't':
                             for (int c = 3; c < lines.get(line).length(); c++) {
-                                System.out.println(lines.get(line).charAt(c));
+                                ;
                             } 
                             break;
                         case 'n':
                             for (int c = 3; c < lines.get(line).length(); c++) {
-                                System.out.println(lines.get(line).charAt(c));
+                                ;
                             } 
                             break;
                     } 
@@ -183,12 +184,110 @@ public class Obj {
 
                     break;
             }
-
-            System.out.println("----------------------------");
         }
     }
 
     public void draw() {
         System.out.println(faces);
+    }
+
+    public void move(float x_d, float y_d, float z_d) {
+        x += x_d;
+        y += y_d;
+        z += z_d;
+    }
+
+    static ArrayList<ArrayList<Float>> mat_mul(ArrayList<ArrayList<Float>> A, ArrayList<ArrayList<Float>> B) {
+        int A_r = A.size();
+        int A_c = A.get(0).size();
+        int B_r = B.size();
+        int B_c = B.get(0).size();
+        int C_r = A_r;
+        int C_c = B_c;
+        float num = 0;
+        ArrayList<ArrayList<Float>> C = new ArrayList<ArrayList<Float>>();
+
+        if (A_c != B_r) {
+            int x = 10/0;
+            System.out.println(x);
+        }
+
+        for (int new_r = 0; new_r < C_r; new_r++) {
+            ArrayList<Float> next_row = new ArrayList<Float>();
+
+            for (int new_c = 0; new_c < C_c; new_c++) {
+                for (int i = 0; i < A_r; i++) {
+                    num += A.get(new_r).get(i)*B.get(i).get(new_c);
+                }
+                next_row.add(num);
+                num = 0;
+            }
+
+            C.add(next_row);
+        }
+
+        return C;
+    }
+
+    static ArrayList<ArrayList<Float>> array_3x3(float a, float b, float c, float d, float e, float f, float g, float h, float i) {
+        ArrayList<ArrayList<Float>> out = new ArrayList<ArrayList<Float>>();
+        ArrayList<Float> row = new ArrayList<Float>();
+
+        row.add(a);
+        row.add(b);
+        row.add(c);
+        out.add(row);
+        row = new ArrayList<Float>();
+        row.add(d);
+        row.add(e);
+        row.add(f);
+        out.add(row);
+        row = new ArrayList<Float>();
+        row.add(g);
+        row.add(h);
+        row.add(i);
+        out.add(row);
+
+        return out;
+    }
+
+    static ArrayList<ArrayList<Float>> array_3x1(float a, float b, float c) {
+        ArrayList<ArrayList<Float>> out = new ArrayList<ArrayList<Float>>();
+        ArrayList<Float> row = new ArrayList<Float>();
+
+        row.add(a);
+        out.add(row);
+        row = new ArrayList<Float>();
+        row.add(b);
+        out.add(row);
+        row = new ArrayList<Float>();
+        row.add(c);
+        out.add(row);
+
+        return out;
+    }
+
+    static ArrayList<Float> rotate_point(float px, float py, float pz, double rx, double ry, double rz, float cx, float cy, float cz) {
+        px -= cx;
+        py -= cy;
+        pz -= cz;
+
+        rx = Math.toRadians(rx);
+        ry = Math.toRadians(ry);
+        rz = Math.toRadians(rz);
+
+        ArrayList<ArrayList<Float>> P = new ArrayList<ArrayList<Float>>();
+
+        P = array_3x1(px, py, pz);
+
+        P = mat_mul(array_3x3(1f, 0f, 0f, 0f, (float) Math.cos(rx), -1f * (float) Math.sin(rx), 0f, (float) Math.sin(rx), (float) Math.cos(rx)), P);
+        P = mat_mul(array_3x3((float) Math.cos(rz), -1f * (float) Math.sin(rz), 0f, (float) Math.sin(rz), (float) Math.cos(rz), 0f, 0f, 0f, 1f), P);
+        P = mat_mul(array_3x3((float) Math.cos(ry), 0f, (float) Math.sin(ry), 0f, 1f, 0f, -1f * (float) Math.sin(ry), 0f, (float) Math.cos(ry)), P);
+
+        ArrayList<Float> P_t = new ArrayList<Float>();
+        P_t.add(P.get(0).get(0) + cx);
+        P_t.add(P.get(1).get(0) + cy);
+        P_t.add(P.get(2).get(0) + cz);
+        return P_t;
     }
 }
