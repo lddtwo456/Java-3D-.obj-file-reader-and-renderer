@@ -187,16 +187,6 @@ public class Obj {
         }
     }
 
-    public void draw() {
-        System.out.println(faces);
-    }
-
-    public void move(float x_d, float y_d, float z_d) {
-        x += x_d;
-        y += y_d;
-        z += z_d;
-    }
-
     static ArrayList<ArrayList<Float>> mat_mul(ArrayList<ArrayList<Float>> A, ArrayList<ArrayList<Float>> B) {
         int A_r = A.size();
         int A_c = A.get(0).size();
@@ -289,5 +279,57 @@ public class Obj {
         P_t.add(P.get(1).get(0) + cy);
         P_t.add(P.get(2).get(0) + cz);
         return P_t;
+    }
+
+    public void move(float x_d, float y_d, float z_d) {
+        x += x_d;
+        y += y_d;
+        z += z_d;
+    }
+
+    public ArrayList<ArrayList<ArrayList<ArrayList<Float>>>> get_draw_instruction() {
+        ArrayList<ArrayList<ArrayList<ArrayList<Float>>>> draw_instruction = new ArrayList<ArrayList<ArrayList<ArrayList<Float>>>>();
+
+        // loop through faces of opject
+        for (ArrayList<ArrayList<Integer>> face : faces) {
+            ArrayList<ArrayList<Float>> face_verts = new ArrayList<ArrayList<Float>>();
+            ArrayList<ArrayList<Float>> face_vert_texts = new ArrayList<ArrayList<Float>>();
+            ArrayList<ArrayList<Float>> face_vert_norms = new ArrayList<ArrayList<Float>>();
+            ArrayList<ArrayList<ArrayList<Float>>> face_instructions = new ArrayList<ArrayList<ArrayList<Float>>>();
+
+            // loop through vert data of face
+            for (ArrayList<Integer> vert : face) {
+                int v = vert.get(0);
+                face_verts.add(vertices.get(v-1));
+
+                try {
+                    int vt = vert.get(1);
+                    face_vert_texts.add(vert_texts.get(vt-1));
+                }
+                catch (Exception e) {
+                    ;
+                }
+                
+                try {
+                    int vn = vert.get(2);
+                    face_vert_norms.add(vert_norms.get(vn-1));
+                }
+                catch (Exception e) {
+                    ;
+                }
+            }
+
+            face_instructions.add(face_verts);
+            face_instructions.add(face_vert_texts);
+            face_instructions.add(face_vert_norms);
+
+            draw_instruction.add(face_instructions);
+        }
+
+        return draw_instruction;
+    }
+
+    public ArrayList<ArrayList<String>> get_face_attributes() {
+        return new ArrayList<ArrayList<String>>();
     }
 }

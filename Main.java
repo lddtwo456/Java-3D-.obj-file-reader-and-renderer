@@ -1,18 +1,21 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Main {
     public static void main(String[] args) {
-        Camera cam = new Camera(0, 0, 0, 0, 0, 0, 90, 100, 100);
-        
+        Win win = new Win(800, 600);
+        Camera cam = new Camera(0, 0, 0, 0, 0, 0, 90, win.w, win.h);
+
         ArrayList<Obj> objects = new ArrayList<Obj>();
         objects.add(new Obj(0, 0, 0, "cube.obj"));
-        objects.add(new Obj(0, 0, 0, "cube2copy.obj"));
 
-        System.out.println(Obj.rotate_point(1, 0, 0, 0, 90, 0, 0, 0, 0));
+        ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Float>>>>> draw_queue = new ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Float>>>>>();
+        ArrayList<ArrayList<ArrayList<String>>> face_attributes = new ArrayList<ArrayList<ArrayList<String>>>();
 
         for (Obj obj : objects) {
-            obj.draw();
+            draw_queue.add(obj.get_draw_instruction());
         }
+        System.out.println(draw_queue);
+
+        win.Update();
     }
 }
