@@ -19,6 +19,8 @@ public class Obj {
     ArrayList<ArrayList<Float>> vert_norms = new ArrayList<ArrayList<Float>>();
     ArrayList<ArrayList<Float>> vert_texts = new ArrayList<ArrayList<Float>>();
 
+    ArrayList<ArrayList<ArrayList<ArrayList<Float>>>> draw_instruction;
+
     /*
         base everything off first character of line
         if null:
@@ -185,6 +187,8 @@ public class Obj {
                     break;
             }
         }
+
+        draw_instruction = draw_instruction();
     }
 
     static ArrayList<ArrayList<Float>> mat_mul(ArrayList<ArrayList<Float>> A, ArrayList<ArrayList<Float>> B) {
@@ -287,7 +291,7 @@ public class Obj {
         z += z_d;
     }
 
-    public ArrayList<ArrayList<ArrayList<ArrayList<Float>>>> get_draw_instruction() {
+    public ArrayList<ArrayList<ArrayList<ArrayList<Float>>>> draw_instruction() {
         ArrayList<ArrayList<ArrayList<ArrayList<Float>>>> draw_instruction = new ArrayList<ArrayList<ArrayList<ArrayList<Float>>>>();
 
         // loop through faces of opject
@@ -300,7 +304,12 @@ public class Obj {
             // loop through vert data of face
             for (ArrayList<Integer> vert : face) {
                 int v = vert.get(0);
-                face_verts.add(vertices.get(v-1));
+                ArrayList<Float> vertex = vertices.get(v-1);
+                ArrayList<Float> offset_vertex = new ArrayList<Float>();
+                offset_vertex.add(vertex.get(0)+x);
+                offset_vertex.add(vertex.get(1)+y);
+                offset_vertex.add(vertex.get(2)+z);
+                face_verts.add(offset_vertex);
 
                 try {
                     int vt = vert.get(1);
