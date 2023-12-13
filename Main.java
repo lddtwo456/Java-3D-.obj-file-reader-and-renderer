@@ -8,7 +8,8 @@ public class Main {
 
         ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Float>>>>> draw_queue = new ArrayList<ArrayList<ArrayList<ArrayList<ArrayList<Float>>>>>();        ArrayList<Obj> objects = new ArrayList<Obj>();
         objects.add(new Obj(3, 0, 7, "teapot.obj"));
-        objects.add(new Obj(-3, 2, 10, "teapot.obj"));
+        objects.add(new Obj(-3, 2, 10, "cow.obj"));
+        objects.add(new Obj(0, 4, 40, "teddy.obj"));
 
         for (Obj obj : objects) {
             draw_queue.add(obj.draw_instruction);
