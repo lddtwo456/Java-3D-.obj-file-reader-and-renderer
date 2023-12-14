@@ -34,11 +34,13 @@ public class Camera {
         ArrayList<Integer> projected_point = new ArrayList<Integer>();
 
         try {
-            int new_x = (int) ((((x_pos+x)/(-1f*(z_pos+z)))*near_plane) + .5f + (sc_width/2));
-            int new_y = (int) ((((y_pos+y)/(-1f*(z_pos+z)))*near_plane) + .5f + (sc_height/2));
+            if (z_pos+z > 0) {
+                int new_x = (int) ((((x_pos+x)/(-1f*(z_pos+z)))*near_plane) + .5f + (sc_width/2));
+                int new_y = (int) ((((y_pos+y)/(-1f*(z_pos+z)))*near_plane) + .5f + (sc_height/2));
 
-            projected_point.add(new_x);
-            projected_point.add(new_y);
+                projected_point.add(new_x);
+                projected_point.add(new_y);
+            }
         }
         catch (Exception e) {
             projected_point.add((int) (x_pos + .5f + (sc_width/2)));

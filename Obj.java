@@ -7,6 +7,7 @@ public class Obj {
     float x;
     float y;
     float z;
+    String filename;
     File file;
     //reading file
     ArrayList<String> lines = new ArrayList<String>();
@@ -45,6 +46,7 @@ public class Obj {
         z = z_pos;
         
         //read file
+        this.filename = filename;
         file = new File(filename);
 
         try (Scanner reader = new Scanner(file)) {
@@ -76,7 +78,7 @@ public class Obj {
                     vert_texts.add(new ArrayList<Float>());
                     vert_norms.add(new ArrayList<Float>());
 
-                    continue;
+                    break;
                 case 'v':
                     switch (lines.get(line).charAt(1)) {
                         case ' ':
@@ -162,6 +164,7 @@ public class Obj {
                     ArrayList<ArrayList<Integer>> face = new ArrayList<ArrayList<Integer>>();
                     ArrayList<Integer> vert = new ArrayList<Integer>();
                     int index = 0;
+
                     for (int c = 2; c < lines.get(line).length(); c++) {
                         char character = lines.get(line).charAt(c);
 
@@ -188,7 +191,7 @@ public class Obj {
             }
         }
 
-        draw_instruction = draw_instruction();
+        draw_instruction = get_initial_draw_instruction();
     }
 
     static ArrayList<ArrayList<Float>> mat_mul(ArrayList<ArrayList<Float>> A, ArrayList<ArrayList<Float>> B) {
@@ -289,10 +292,20 @@ public class Obj {
         x += x_d;
         y += y_d;
         z += z_d;
+        
+        for (ArrayList<ArrayList<ArrayList<Float>>> face : draw_instruction) {
+            ArrayList<ArrayList<Float>> verts = face.get(0);
+
+            for (ArrayList<Float> vert : verts) {
+                vert.set(0, vert.get(0) + x_d);
+                vert.set(1, vert.get(1) + y_d);
+                vert.set(2, vert.get(2) + z_d);
+            }
+        }
     }
 
-    public ArrayList<ArrayList<ArrayList<ArrayList<Float>>>> draw_instruction() {
-        ArrayList<ArrayList<ArrayList<ArrayList<Float>>>> draw_instruction = new ArrayList<ArrayList<ArrayList<ArrayList<Float>>>>();
+    public ArrayList<ArrayList<ArrayList<ArrayList<Float>>>> get_initial_draw_instruction() {
+        ArrayList<ArrayList<ArrayList<ArrayList<Float>>>> draw_instruct= new ArrayList<ArrayList<ArrayList<ArrayList<Float>>>>();
 
         // loop through faces of opject
         for (ArrayList<ArrayList<Integer>> face : faces) {
@@ -332,10 +345,10 @@ public class Obj {
             face_instructions.add(face_vert_texts);
             face_instructions.add(face_vert_norms);
 
-            draw_instruction.add(face_instructions);
+            draw_instruct.add(face_instructions);
         }
 
-        return draw_instruction;
+        return draw_instruct;
     }
 
     public ArrayList<ArrayList<String>> get_face_attributes() {

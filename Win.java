@@ -40,16 +40,30 @@ public class Win extends JFrame {
                     switch (verts.size()) {
                         case 3:
                             for (ArrayList<Float> vert : verts) {
-                                projected_verts.add(cam.projectPoint(vert.get(0), vert.get(1), vert.get(2)));
+                                if (vert.size() == 3) {
+                                    projected_verts.add(cam.projectPoint(vert.get(0), vert.get(1), vert.get(2)));
+                                } else {
+                                    projected_verts.add(new ArrayList<Integer>());
+                                }
                             }
-
-                            g.drawPolygon(new int[] {projected_verts.get(0).get(0), projected_verts.get(1).get(0), projected_verts.get(2).get(0)}, new int[] {projected_verts.get(0).get(1), projected_verts.get(1).get(1), projected_verts.get(2).get(1)}, 3);
+                            
+                            int lowest_size = 2;
+                            for (ArrayList<Integer> vert : projected_verts) {
+                                if (vert.size() < lowest_size) {
+                                    lowest_size = vert.size();
+                                }
+                            }
+                            if (lowest_size == 2) {
+                                g.drawPolygon(new int[] {projected_verts.get(0).get(0), projected_verts.get(1).get(0), projected_verts.get(2).get(0)}, new int[] {projected_verts.get(0).get(1), projected_verts.get(1).get(1), projected_verts.get(2).get(1)}, 3);
+                            }
+                            break;
                         case 4:
                             for (ArrayList<Float> vert : verts) {
                                 projected_verts.add(cam.projectPoint(vert.get(0), vert.get(1), vert.get(2)));
                             }
 
                             g.drawPolygon(new int[] {projected_verts.get(0).get(0), projected_verts.get(1).get(0), projected_verts.get(2).get(0), projected_verts.get(3).get(0)}, new int[] {projected_verts.get(0).get(1), projected_verts.get(1).get(1), projected_verts.get(2).get(1), projected_verts.get(3).get(1)}, 4);
+                            break;
                     }
                 }
             }
@@ -62,5 +76,9 @@ public class Win extends JFrame {
         this.cam = cam;
         this.test_val += 1;
         repaint();
+    }
+
+    public void set_title(String text) {
+        setTitle(text);;
     }
 }
