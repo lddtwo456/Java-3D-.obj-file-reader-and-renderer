@@ -8,24 +8,22 @@ public class Obj {
 
     String file_name;
     File file;
-
-    // MOST IMPORTANT FOR RENDERING
-    float vertex_buffer[][] = null;
-    int index_buffer[] = null;
-    // somewhat unneeded, maybe useful for animations later?
-    ArrayList<ArrayList<Integer>> grouped_indices = new ArrayList<ArrayList<Integer>>();
+    Object parent;
 
     // BUFFER GENERATION
     ArrayList<String> lines = new ArrayList<String>();
+    ArrayList<ArrayList<Integer>> grouped_indices = new ArrayList<ArrayList<Integer>>();
 
     // [[x, y, z], [vert], ...]
     ArrayList<ArrayList<Float>> vertices = new ArrayList<ArrayList<Float>>();
     // [index, ...]
     ArrayList<Integer> subobj_indices = new ArrayList<Integer>();
 
-    public Obj(float scale, String file_name) {
+    public Obj(float scale, String file_name, Object parent) {
         this.scale = scale;
         this.file_name = file_name;
+
+        this.parent = parent;
 
         this.buildBuffers();
     }
@@ -53,23 +51,23 @@ public class Obj {
             }
         }
 
-        this.vertex_buffer = new float[vertices.size()][3];
+        parent.vertex_buffer = new float[vertices.size()][3];
         for (int j = 0; j < vertices.size(); j++) {
             for (int k = 0; k < vertices.get(0).size(); k++) {
-                vertex_buffer[j][k] = vertices.get(j).get(k);
+                parent.vertex_buffer[j][k] = vertices.get(j).get(k);
             }
         }
 
         ArrayList<Integer> ungrouped_indices = new ArrayList<Integer>();
-        for (ArrayList<Integer> subobj_i : grouped_indices) {
+        for (ArrayList<Integer> subobj_i : this.grouped_indices) {
             for (int index : subobj_i) {
                 ungrouped_indices.add(index);
             }
         }
 
-        this.index_buffer = new int[ungrouped_indices.size()];
+        parent.index_buffer = new int[ungrouped_indices.size()];
         for (int j = 0; j < ungrouped_indices.size(); j++) {
-            index_buffer[j] = ungrouped_indices.get(j);
+            parent.index_buffer[j] = ungrouped_indices.get(j);
         }
     }
 
