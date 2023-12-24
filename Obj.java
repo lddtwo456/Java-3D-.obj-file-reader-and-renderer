@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Obj {
-    float scale;
-
     String file_name;
     File file;
     Object parent;
@@ -19,8 +17,7 @@ public class Obj {
     // [index, ...]
     ArrayList<Integer> subobj_indices = new ArrayList<Integer>();
 
-    public Obj(float scale, String file_name, Object parent) {
-        this.scale = scale;
+    public Obj(String file_name, Object parent) {
         this.file_name = file_name;
 
         this.parent = parent;
@@ -160,7 +157,6 @@ public class Obj {
                 is_negative = true;
             }
         } if (is_negative) {vert.add(n*-1);} else {vert.add(n);}
-        
         
         return vert;
     }
